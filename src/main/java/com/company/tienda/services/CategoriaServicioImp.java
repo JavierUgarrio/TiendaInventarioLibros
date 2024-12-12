@@ -134,7 +134,26 @@ public class CategoriaServicioImp implements ICategoriaServicio {
 		}
 		
 		return new ResponseEntity<RespuestaCategoriaRest>(respuesta, HttpStatus.OK);
+				
+	}
+	
+	@Override
+	@Transactional()
+	public ResponseEntity<RespuestaCategoriaRest> eliminar(Long id){
+		RespuestaCategoriaRest respuesta = new RespuestaCategoriaRest();
+		List<Categoria> listaCategorias = new ArrayList<>();
 		
+		try {
+			categoriaDao.deleteById(id);
+			respuesta.setMetadata("Respuesta OK", "00", "Categoria eliminada");
+			
+		}catch(Exception ex) {
+			respuesta.setMetadata("NOT OK", "-1", "Error eliminar por ID");
+			ex.getStackTrace();
+			return new ResponseEntity<RespuestaCategoriaRest>(respuesta, HttpStatus.INTERNAL_SERVER_ERROR);
+			
+		}
 		
+		return new ResponseEntity<RespuestaCategoriaRest>(respuesta, HttpStatus.OK);
 	}
 }

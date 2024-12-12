@@ -14,5 +14,7 @@ public interface ICategoriaServicio {
 	public ResponseEntity<RespuestaCategoriaRest> guardar(Categoria categoria);
 	
 	public ResponseEntity<RespuestaCategoriaRest> actualizar(Categoria categoria, Long id);
+	
+	public ResponseEntity<RespuestaCategoriaRest> eliminar(Long id);
 }
 
