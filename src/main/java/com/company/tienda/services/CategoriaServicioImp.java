@@ -1,6 +1,8 @@
 package com.company.tienda.services;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -38,4 +40,33 @@ public class CategoriaServicioImp implements ICategoriaServicio {
 		return new ResponseEntity<RespuestaCategoriaRest>(respuesta, HttpStatus.OK);
 	}
 
+	@Override
+	@Transactional(readOnly = true)
+	public ResponseEntity<RespuestaCategoriaRest> buscarId(Long id){
+		
+		RespuestaCategoriaRest respuesta = new RespuestaCategoriaRest();
+		List<Categoria> listaCategoria =new ArrayList<>();
+		
+		try {
+			Optional<Categoria> categoria =  categoriaDao.findById(id);
+			
+			if(categoria.isPresent()) {
+				listaCategoria.add(categoria.get());
+				respuesta.getRepuestaCategoria().setCategoria(listaCategoria);
+				respuesta.setMetadata("Respuesta OK", "00", "Respuesta correcta");
+			}else {
+				respuesta.setMetadata("NOT OK", "-1", "No se encuentra el ID de Categoria");
+				return new ResponseEntity<RespuestaCategoriaRest>(respuesta, HttpStatus.NOT_FOUND);
+			}
+			
+		}catch(Exception ex) {
+			respuesta.setMetadata("NOT OK", "-1", "Error consulta por ID");
+			ex.getStackTrace();
+			return new ResponseEntity<RespuestaCategoriaRest>(respuesta, HttpStatus.INTERNAL_SERVER_ERROR);
+			
+		}
+		
+		return new ResponseEntity<RespuestaCategoriaRest>(respuesta, HttpStatus.OK);
+		
+	}
 }
